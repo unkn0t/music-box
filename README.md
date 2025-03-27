@@ -86,17 +86,17 @@ Feel free to explore and experiment – MusicBox is designed to make your musica
 ## Project Structure
 
 ```
-musicbox/
-├── backend/
-│   ├── musicbox/          # Django project settings
-│   ├── apps/              # Django apps (e.g., authentication, music management)
-│   ├── requirements.txt   # Python dependencies
-│   └── manage.py          # Django management script
-└── frontend/
-    ├── src/               # Angular source files
-    ├── angular.json       # Angular configuration
-    └── package.json       # Node.js dependencies
-
+music-box
+├── backend
+│   ├── manage.py
+│   ├── musicbox
+│   └── requirements.txt
+├── frontend
+│   └── musicbox
+│       ├── angular.json
+│       ├── package.json
+│       └── src
+└── README.md
 ```
 
 ## Contributors
