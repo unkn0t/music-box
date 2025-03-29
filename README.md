@@ -1,7 +1,13 @@
-# MusicBox
+<div align="center">
+   <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/musicbox-logo.png">
+       <source media="(prefers-color-scheme: light)" srcset="assets/musicbox-logo-transparent.png">
+      <img src="assets/musicbox-logo.png" alt="MusicBox Logo" width="30%">
+   </picture>   
 
-[![Angular](https://img.shields.io/badge/Angular-v12-red.svg)](https://angular.io/)
-[![Django](https://img.shields.io/badge/Django-v3.2-green.svg)](https://www.djangoproject.com/)
+   [![Angular](https://img.shields.io/badge/Angular-v12-red.svg)](https://angular.io/)
+   [![Django](https://img.shields.io/badge/Django-v3.2-green.svg)](https://www.djangoproject.com/)
+</div>
 
 Welcome to **MusicBox** – the ultimate web application that lets you dive into your favorite tunes! Built with a robust **Angular** frontend and a powerful **Django** backend, MusicBox provides you with a seamless music streaming and management experience. Enjoy creating and managing your playlists, exploring artists, and discovering albums and songs from your beloved music artists.
 
