@@ -1,8 +1,8 @@
 <div align="center">
    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="assets/musicbox-logo.png">
-       <source media="(prefers-color-scheme: light)" srcset="assets/musicbox-logo-transparent.png">
-      <img src="assets/musicbox-logo.png" alt="MusicBox Logo" width="30%">
+      <source media="(prefers-color-scheme: dark)" srcset="assets/musicbox-logo-light.png">
+      <source media="(prefers-color-scheme: light)" srcset="assets/musicbox-logo-dark.png">
+      <img src="assets/musicbox-logo-dark.png" alt="MusicBox Logo" width="30%">
    </picture>   
 
    [![Angular](https://img.shields.io/badge/Angular-v12-red.svg)](https://angular.io/)
