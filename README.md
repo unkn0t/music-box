@@ -5,8 +5,8 @@
       <img src="assets/musicbox-logo-dark.png" alt="MusicBox Logo" width="30%">
    </picture>   
 
-   [![Angular](https://img.shields.io/badge/Angular-v12-red.svg)](https://angular.io/)
-   [![Django](https://img.shields.io/badge/Django-v3.2-green.svg)](https://www.djangoproject.com/)
+   [![Angular](https://img.shields.io/badge/Angular-v19-red.svg)](https://angular.io/)
+   [![Django](https://img.shields.io/badge/Django-v5.1-green.svg)](https://www.djangoproject.com/)
 </div>
 
 Welcome to **MusicBox** – the ultimate web application that lets you dive into your favorite tunes! Built with a robust **Angular** frontend and a powerful **Django** backend, MusicBox provides you with a seamless music streaming and management experience. Enjoy creating and managing your playlists, exploring artists, and discovering albums and songs from your beloved music artists.
@@ -50,13 +50,13 @@ Welcome to **MusicBox** – the ultimate web application that lets you dive into
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/musicbox.git
+   https://github.com/unkn0t/music-box.git
    cd musicbox
    ```
    
 2.  **Frontend Setup (Angular):**
     ```bash
-    cd frontend
+    cd frontend/musicbox
     npm install
     ng serve  
     ```
@@ -65,7 +65,7 @@ Welcome to **MusicBox** – the ultimate web application that lets you dive into
     
 3.  **Backend Setup (Django):**
     ```bash
-    cd ../backend
+    cd backend
     python -m venv .venv
     source .venv/bin/activate  # For Windows use: env\Scripts\activate
     pip install -r requirements.txt
