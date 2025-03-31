@@ -1,10 +1,22 @@
 <div class="home-container">
   <div class="content">
-    <h1>Welcome to the Home Page</h1>
-    <p>Your main content goes here...</p>
-    <!-- Additional home page content -->
+
+    <!-- Список песен -->
+    <div class="song-list">
+      <h2>Список треков</h2>
+      <ul>
+        <li *ngFor="let song of songs"
+            (click)="selectSong(song)"
+            [class.selected]="song === selectedSong">
+          {{ song.name }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Дополнительный контент страницы -->
   </div>
   <div class="fixed-audio-player">
-    <app-player></app-player>
+    <!-- Передаём выбранный трек в компонент плеера -->
+    <app-player [song]="selectedSong"></app-player>
   </div>
 </div>

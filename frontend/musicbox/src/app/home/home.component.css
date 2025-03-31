@@ -16,3 +16,12 @@
   z-index: 1000;
   /* Ensure it stays on top */
 }
+.song-list ul li {
+  cursor: pointer;
+  padding: 5px;
+  transition: background-color 0.3s;
+}
+
+.song-list ul li:hover {
+  background-color: #f0f0f0;
+}

@@ -1,23 +1,51 @@
 <div class="audio-player">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
   <audio #audioPlayer (timeupdate)="updateCurrentTime()" (loadedmetadata)="setDuration()">
-    <source src="assets/audio/sample.mp3" type="audio/mpeg">
+    <!-- Подставляем динамический источник. Если песня не выбрана, используется дефолтный sample -->
+    <source [src]="song?.src" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
-  <div class="controls">
-    <button (click)="playAudio()" [disabled]="isPlaying">Play</button>
-    <button (click)="pauseAudio()" [disabled]="!isPlaying">Pause</button>
-  </div>
 
-  <div class="slider-container">
-    <input type="range"
-           min="0"
-           [max]="duration"
-           [value]="currentTime"
-           (input)="seekAudio($event)"
-           class="slider">
-  </div>
+  <button class="control-btn" (click)="seekBackward()">
+    <span class="material-icons">skip_previous</span>
+  </button>
+  <button class="control-btn" (click)="playAudio()" [disabled]="isPlaying">
+    <span class="material-icons">play_arrow</span>
+  </button>
+  <button class="control-btn" (click)="pauseAudio()" [disabled]="!isPlaying">
+    <span class="material-icons">pause</span>
+  </button>
+  <button class="control-btn" (click)="seekForward()">
+    <span class="material-icons">skip_next</span>
+  </button>
 
-  <div class="time-display">
-    Current Time: {{ formatTime(currentTime) }}
-  </div>
+  <div class="time-display">{{ formatTime(currentTime) }}</div>
+
+  <input type="range"
+         class="progress-slider"
+         min="0"
+         [max]="duration"
+         [value]="currentTime"
+         (input)="seekAudio($event)">
+
+  <div class="time-display">-{{ formatTime(duration - currentTime) }}</div>
+
+  <button class="control-btn" (click)="toggleLoop()">
+    <span class="material-icons" *ngIf="isLooping">loop</span>
+    <span class="material-icons" *ngIf="!isLooping">repeat</span>
+  </button>
+
+  <button class="control-btn" (click)="toggleMute()">
+    <span class="material-icons" *ngIf="!isMuted">volume_up</span>
+    <span class="material-icons" *ngIf="isMuted">volume_off</span>
+  </button>
+
+  <input type="range"
+         class="volume-slider"
+         min="0"
+         max="1"
+         step="0.01"
+         [value]="volume"
+         (input)="changeVolume($event)">
 </div>
