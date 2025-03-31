@@ -56,7 +56,7 @@ Welcome to **MusicBox** – the ultimate web application that lets you dive into
    
 2.  **Frontend Setup (Angular):**
     ```bash
-    cd frontend
+    cd frontend/musicbox
     npm install
     ng serve  
     ```
