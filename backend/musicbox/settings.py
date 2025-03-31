@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    "corsheaders",
     "jwt_auth",
     "api",
 ]
@@ -59,7 +60,21 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",  # Angular development server
+]
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]
+
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",  # Must be before common middleware
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",

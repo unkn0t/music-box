@@ -15,9 +15,9 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
   login(credentials: { username: string; password: string }): Observable<any> {
-    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials).pipe(
+    return this.http.post<{ access: string }>(`${this.apiUrl}/login/`, credentials).pipe(
       tap((response) => {
-        localStorage.setItem(this.tokenKey, response.token);
+        localStorage.setItem(this.tokenKey, response.access);
         this.isAuthenticated.next(true);
       })
     );
@@ -26,7 +26,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     this.isAuthenticated.next(false);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login/']);
   }
 
   getToken(): string | null {
