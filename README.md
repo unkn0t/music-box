@@ -50,8 +50,8 @@ Welcome to **MusicBox** – the ultimate web application that lets you dive into
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/musicbox.git
-   cd musicbox
+      https://github.com/unkn0t/music-box.git
+      cd musicbox
    ```
    
 2.  **Frontend Setup (Angular):**
