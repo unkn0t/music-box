@@ -1,0 +1,23 @@
+<div class="audio-player">
+  <audio #audioPlayer (timeupdate)="updateCurrentTime()" (loadedmetadata)="setDuration()">
+    <source src="assets/audio/sample.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <div class="controls">
+    <button (click)="playAudio()" [disabled]="isPlaying">Play</button>
+    <button (click)="pauseAudio()" [disabled]="!isPlaying">Pause</button>
+  </div>
+
+  <div class="slider-container">
+    <input type="range"
+           min="0"
+           [max]="duration"
+           [value]="currentTime"
+           (input)="seekAudio($event)"
+           class="slider">
+  </div>
+
+  <div class="time-display">
+    Current Time: {{ formatTime(currentTime) }}
+  </div>
+</div>
