@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import {NgIf} from '@angular/common';
-import {RouterLink} from '@angular/router';
+import {RouterLink, RouterLinkActive} from '@angular/router';
 
 @Component({
   selector: 'app-header',
   imports: [
     NgIf,
-    RouterLink
+    RouterLink,
+    RouterLinkActive
   ],
   templateUrl: './header.component.html'
 })

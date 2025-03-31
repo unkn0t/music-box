@@ -1,4 +1,10 @@
-<nav>
-  <a routerLink="/dashboard" *ngIf="isLoggedIn">Dashboard</a>
-  <button (click)="logout()" *ngIf="isLoggedIn">Logout</button>
+<nav class="content-nav">
+  <ul class="nav nav-pills nav-justified">
+    <li class="nav-item">
+      <a routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page" class="nav-link active">Home</a>
+    </li>
+    <li class="nav-item">
+      <a type="button" class="nav-link" (click)="logout()" *ngIf="isLoggedIn">Logout</a>
+    </li>
+  </ul>
 </nav>
