@@ -1,8 +1,7 @@
 .home-container {
   min-height: 100vh;
   position: relative;
-  padding-bottom: 120px;
-  /* Adjust this value based on the height of your audio player */
+  padding: 20px 20px 120px;
 }
 
 .fixed-audio-player {
@@ -10,9 +9,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #fff;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  padding: 10px;
+  background-color: black;
   z-index: 1000;
   /* Ensure it stays on top */
 }
@@ -23,5 +20,5 @@
 }
 
 .song-list ul li:hover {
-  background-color: #f0f0f0;
+  background-color: #00a0a0;
 }

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { PlayerComponent } from '../player/player.component';
 import {NgForOf} from '@angular/common';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [PlayerComponent, HttpClientModule, NgForOf],
+  imports: [PlayerComponent, NgForOf],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

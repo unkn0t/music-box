@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, Input } from '@angular/core';
+import {Component, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, Input, AfterViewInit} from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 
 @Component({
@@ -8,9 +8,11 @@ import { CommonModule, NgIf } from '@angular/common';
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.css']
 })
-export class PlayerComponent implements OnInit, OnChanges {
+export class PlayerComponent implements AfterViewInit, OnChanges {
   @Input() song: any;
   @ViewChild('audioPlayer') audioPlayer!: ElementRef<HTMLAudioElement>;
+  @ViewChild('timeSlider') timeSlider!: ElementRef<HTMLInputElement>;
+  @ViewChild('volumeSlider') volumeSlider!: ElementRef<HTMLInputElement>;
 
   isPlaying: boolean = false;
   isMuted: boolean = false;
@@ -19,20 +21,29 @@ export class PlayerComponent implements OnInit, OnChanges {
   duration: number = 0;
   volume: number = 0.7;
 
-  constructor() { }
-
-  ngOnInit(): void { }
+  ngAfterViewInit(): void {
+    this.updateSliderBackground(this.volumeSlider.nativeElement, this.volume * 100);
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // При изменении выбранного трека обновляем источник аудио
     if (changes['song'] && this.audioPlayer && this.song) {
       this.audioPlayer.nativeElement.src = this.song.src;
       this.audioPlayer.nativeElement.load();
-      // Можно автоматически запускать воспроизведение или оставить по кнопке
-      // this.playAudio();
+      this.playAudio();
     }
   }
 
+  toggleAudio(): void {
+    if (this.isPlaying) {
+      this.pauseAudio();
+    } else {
+      this.playAudio();
+    }
+  }
+
+  updateSliderBackground(slider: HTMLInputElement, value: number): void {
+    slider.style.background = `linear-gradient(to right, #ff0000 0%, #ff0000 ${value}%, #d3d3d3 ${value}%, #d3d3d3 100%)`;
+  }
 
   playAudio(): void {
     this.audioPlayer.nativeElement.play();
@@ -46,6 +57,7 @@ export class PlayerComponent implements OnInit, OnChanges {
 
   updateCurrentTime(): void {
     this.currentTime = this.audioPlayer.nativeElement.currentTime;
+    this.updateSliderBackground(this.timeSlider.nativeElement, this.currentTime / this.duration * 100);
   }
 
   setDuration(): void {
@@ -57,11 +69,13 @@ export class PlayerComponent implements OnInit, OnChanges {
     const newTime = parseFloat(target.value);
     this.audioPlayer.nativeElement.currentTime = newTime;
     this.currentTime = newTime;
+    this.updateSliderBackground(target, this.currentTime / this.duration * 100);
   }
 
   changeVolume(event: any) {
     this.volume = event.target.value;
     this.audioPlayer.nativeElement.volume = this.volume;
+    this.updateSliderBackground(event.target as HTMLInputElement, this.volume * 100);
   }
 
   toggleMute() {
