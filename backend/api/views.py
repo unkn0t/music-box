@@ -1,11 +1,12 @@
 from django.http import Http404
 from django.contrib.auth.models import User
-from rest_framework import generics, mixins, status, permissions
-from rest_framework.decorators import api_view
+from rest_framework import status, permissions
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Album, Artist, Playlist, Track
+from .permissions import IsOwner
 from .serializers import (
     AlbumSerializer,
     ArtistSerializer,
@@ -77,15 +78,23 @@ def album_list_tracks(request, album_id):
     return Response(serializer.data)
 
 
-class PlaylistDetails(mixins.RetrieveModelMixin, generics.GenericAPIView):
-    queryset = Playlist.objects.all()
-    serialiser = PlaylistSerializer
+class PlaylistDetails(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
 
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+    def get_object(self, pk):
+        try:
+            return Playlist.objects.get(pk=pk)
+        except Playlist.DoesNotExist:
+            raise Http404
+
+    def get(self, request, playlist_id, format=None):
+        playlist = self.get_object(playlist_id)
+        serializer = PlaylistSerializer(playlist)
+        return Response(serializer.data)
 
 
 @api_view(["GET"])
+@permission_classes([permissions.IsAuthenticated, IsOwner])
 def playlist_list_tracks(request, playlist_id):
     tracks = Playlist.objects.get(pk=playlist_id).tracks
     serializer = TrackSerializer(tracks, many=True)

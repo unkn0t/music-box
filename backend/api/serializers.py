@@ -28,6 +28,8 @@ class TrackSerializer(serializers.ModelSerializer):
 
 
 class PlaylistSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source="owner.username")
+
     class Meta:
         model = Playlist
-        fields = ["name", "cover", "tracks", "authors"]
+        fields = ["name", "cover", "tracks", "owner"]
