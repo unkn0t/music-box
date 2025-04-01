@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-from django.core.files import File
 from django.contrib.auth import get_user_model
 
 # Set up Django settings (adjust "your_project.settings" accordingly)
@@ -24,12 +23,8 @@ def create_artists(artists_data):
     artist_mapping = {}
     for item in artists_data:
         name = item["name"]
-        photo_path = os.path.join(
-            BASE_PATH, item.get("photo").removeprefix("/")
-        )
-        artist = Artist.objects.create(name=name)
-        if not (photo_path and os.path.exists(photo_path)):
-            print(f"Photo not found for artist '{name}': {photo_path}")
+        photo_path = item.get("photo")
+        artist = Artist.objects.create(name=name, photo=photo_path)
         artist_mapping[name] = artist
     return artist_mapping
 
@@ -39,19 +34,16 @@ def create_albums(albums_data, artist_mapping):
     for item in albums_data:
         name = item["name"]
         album_type = item["album_type"]
-        cover_path = os.path.join(
-            BASE_PATH, item.get("cover").removeprefix("/")
-        )
+        cover_path = item.get("cover")
         release_date = item["release_date"]
         date_precision = item["release_date_precision"]
         album = Album.objects.create(
             name=name,
             album_type=album_type,
+            cover=cover_path,
             release_date=release_date,
             release_date_precision=date_precision,
         )
-        if not (cover_path and os.path.exists(cover_path)):
-            print(f"Cover not found for album '{name}': {cover_path}")
         # Set album artists by looking up names in the mapping
         album_artists = [
             artist_mapping.get(artist_name)
@@ -69,18 +61,14 @@ def create_tracks(tracks_data, album_mapping, artist_mapping):
     for item in tracks_data:
         name = item["name"]
         album_name = item["album"]
-        audio_path = os.path.join(
-            BASE_PATH, item.get("audio").removeprefix("/")
-        )
+        audio_path = item.get("audio")
         album = album_mapping.get(album_name)
         if not album:
             print(
                 f"Album '{album_name}' not found for track '{name}'. Skipping."
             )
             continue
-        track = Track.objects.create(name=name, album=album)
-        if not (audio_path and os.path.exists(audio_path)):
-            print(f"Audio file not found for track '{name}': {audio_path}")
+        track = Track.objects.create(name=name, album=album, audio=audio_path)
         track_artists = [
             artist_mapping.get(artist_name)
             for artist_name in item.get("artists", [])
@@ -95,9 +83,7 @@ def create_tracks(tracks_data, album_mapping, artist_mapping):
 def create_playlists(playlists_data, track_mapping):
     for item in playlists_data:
         name = item["name"]
-        cover_path = os.path.join(
-            BASE_PATH, item.get("cover").removeprefix("/")
-        )
+        cover_path = item.get("cover")
         track_names = item.get("tracks", [])
         owner_username = item.get("owner")
         try:
@@ -107,9 +93,9 @@ def create_playlists(playlists_data, track_mapping):
                 f"User '{owner_username}' not found for playlist '{name}'. Skipping."
             )
             continue
-        playlist = Playlist.objects.create(name=name, owner=owner)
-        if not (cover_path and os.path.exists(cover_path)):
-            print(f"Cover not found for playlist '{name}': {cover_path}")
+        playlist = Playlist.objects.create(
+            name=name, cover=cover_path, owner=owner
+        )
         playlist_tracks = [
             track_mapping.get(track_name) for track_name in track_names
         ]
