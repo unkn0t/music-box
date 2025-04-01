@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -25,15 +25,21 @@ export class AuthService {
     );
   }
 
-  logout(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/logout/`, { refresh: this.getRefreshToken() }).pipe(
-      tap((_response) => {
+  logout(): void {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getAccessToken()}`
+    });
+
+    this.http.post(`${this.apiUrl}/logout/`, { refresh: this.getRefreshToken() }, { headers }).subscribe(
+      () => {
         localStorage.removeItem(this.accessTokenKey);
         localStorage.removeItem(this.refreshTokenKey);
         this.isAuthenticated.next(false);
-        this.router.navigate(['/login/']);
-      })
-    );
+        this.router.navigate(['/login']).then((result) => {
+          if (!result) console.log("Navigation to login failed!")
+          else console.log("Navigation to login succeed!")
+        });
+      });
   }
 
   getAccessToken(): string | null {

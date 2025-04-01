@@ -1,10 +1,28 @@
-<nav class="content-nav">
-  <ul class="nav nav-pills nav-justified">
-    <li class="nav-item">
-      <a routerLink="/home" routerLinkActive="active" ariaCurrentWhenActive="page" class="nav-link active">Home</a>
-    </li>
-    <li class="nav-item">
-      <a type="button" class="nav-link" (click)="logout()" *ngIf="isLoggedIn">Logout</a>
-    </li>
-  </ul>
+<nav class="navbar navbar-expand-lg navbar-dark bg-black px-3">
+  <a class="navbar-brand text-light"
+     routerLink="/home"
+     routerLinkActive="active"
+     ariaCurrentWhenActive="page">
+    <img src="musicbox-logo-light.png" alt="Logo" width="32" height="32" class="d-inline-block align-text-center">
+    MusicBox
+  </a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a routerLink="/home"
+           routerLinkActive="active"
+           ariaCurrentWhenActive="page"
+           class="nav-link active">Home</a>
+      </li>
+    </ul>
+    <form class="d-flex ms-3" role="search">
+      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-light" type="submit">Search</button>
+    </form>
+  </div>
+  <button class="btn btn-primary ms-auto" (click)="login()" *ngIf="!isLoggedIn">Login</button>
+  <button class="btn btn-primary ms-auto" (click)="logout()" *ngIf="isLoggedIn">Logout</button>
 </nav>
