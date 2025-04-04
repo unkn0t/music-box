@@ -1,2 +1,5 @@
 <app-header *ngIf="showHeader"></app-header>
+<div class="fixed-audio-player" *ngIf="showPlayer">
+  <app-player [song]="undefined"></app-player>
+</div>
 <router-outlet />

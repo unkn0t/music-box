@@ -3,10 +3,11 @@ import {ActivatedRoute, Data, NavigationEnd, Router, RouterOutlet} from '@angula
 import {HeaderComponent} from './header/header.component';
 import {filter, map, mergeMap} from 'rxjs';
 import {NgIf} from '@angular/common';
+import {PlayerComponent} from './player/player.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, NgIf],
+  imports: [RouterOutlet, HeaderComponent, NgIf, PlayerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -14,6 +15,7 @@ export class AppComponent implements OnInit {
   title = 'musicbox';
 
   showHeader = true;
+  showPlayer = true;
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
 
@@ -33,6 +35,7 @@ export class AppComponent implements OnInit {
       .subscribe((data: Data) => {
         // Default to true if not set
         this.showHeader = data['showHeader'] !== false;
+        this.showPlayer = data['showPlayer'] !== false;
       });
   }
 }

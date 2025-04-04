@@ -1,0 +1,11 @@
+.album-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 10%;
+  object-fit: cover;
+}
+
+.album-card {
+  text-align: center;
+  margin: 10px;
+}

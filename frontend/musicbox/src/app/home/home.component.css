@@ -4,21 +4,3 @@
   padding: 20px 20px 120px;
 }
 
-.fixed-audio-player {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: black;
-  z-index: 1000;
-  /* Ensure it stays on top */
-}
-.song-list ul li {
-  cursor: pointer;
-  padding: 5px;
-  transition: background-color 0.3s;
-}
-
-.song-list ul li:hover {
-  background-color: #00a0a0;
-}

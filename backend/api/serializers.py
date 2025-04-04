@@ -3,7 +3,7 @@ from .models import Artist, Album, Track, Playlist
 
 
 class ArtistSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source="id")
+    id = serializers.ReadOnlyField()
 
     class Meta:
         model = Artist
@@ -11,7 +11,7 @@ class ArtistSerializer(serializers.ModelSerializer):
 
 
 class AlbumSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source="id")
+    id = serializers.ReadOnlyField()
 
     class Meta:
         model = Album
@@ -27,7 +27,7 @@ class AlbumSerializer(serializers.ModelSerializer):
 
 
 class TrackSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source="id")
+    id = serializers.ReadOnlyField()
 
     class Meta:
         model = Track
@@ -35,7 +35,7 @@ class TrackSerializer(serializers.ModelSerializer):
 
 
 class PlaylistSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source="id")
+    id = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source="owner.username")
 
     class Meta:
