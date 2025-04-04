@@ -12,6 +12,7 @@ urlpatterns = [
     path("albums/<int:album_id>/", views.AlbumDetails.as_view()),
     path("albums/<int:album_id>/tracks/", views.album_list_tracks),
     # Playlist
+    path("me/playlists/", views.PlaylistList.as_view()),
     path("playlists/<int:playlist_id>/", views.PlaylistDetails.as_view()),
     path("playlists/<int:playlist_id>/tracks/", views.playlist_list_tracks),
     # User

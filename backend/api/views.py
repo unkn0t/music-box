@@ -1,4 +1,3 @@
-from django.http import Http404
 from django.contrib.auth.models import User
 from rest_framework import status, permissions
 from rest_framework.decorators import api_view, permission_classes
@@ -59,15 +58,12 @@ def artist_list_tracks(request, artist_id):
 
 
 class AlbumDetails(APIView):
-    def get_object(self, pk):
-        try:
-            return Album.objects.get(pk=pk)
-        except Album.DoesNotExist:
-            raise Http404
-
     def get(self, request, album_id, format=None):
-        album = self.get_object(album_id)
-        serializer = AlbumSerializer(album)
+        try:
+            album = Album.objects.get(pk=album_id)
+            serializer = AlbumSerializer(album)
+        except Album.DoesNotExist as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.data)
 
 
@@ -78,19 +74,59 @@ def album_list_tracks(request, album_id):
     return Response(serializer.data)
 
 
+class PlaylistList(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+        playlists = Playlist.objects.filter(owner=request.user)
+        serializer = PlaylistSerializer(playlists, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = PlaylistSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(owner=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+
+
 class PlaylistDetails(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
-    def get_object(self, pk):
-        try:
-            return Playlist.objects.get(pk=pk)
-        except Playlist.DoesNotExist:
-            raise Http404
-
     def get(self, request, playlist_id, format=None):
-        playlist = self.get_object(playlist_id)
-        serializer = PlaylistSerializer(playlist)
+        try:
+            playlist = Playlist.objects.get(pk=playlist_id)
+            serializer = PlaylistSerializer(playlist)
+        except Playlist.DoesNotExist as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
         return Response(serializer.data)
+
+    def put(self, request, playlist_id, format=None):
+        try:
+            playlist = Playlist.objects.get(pk=playlist_id)
+            serializer = PlaylistSerializer(playlist, data=request.data)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response(
+                    serializer.errors, status=status.HTTP_400_BAD_REQUEST
+                )
+        except Playlist.DoesNotExist as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, playlist_id, format=None):
+        try:
+            playlist = Playlist.objects.get(pk=playlist_id)
+            playlist.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Playlist.DoesNotExist as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view(["GET"])
