@@ -51,7 +51,7 @@ Welcome to **MusicBox** – the ultimate web application that lets you dive into
 1. **Clone the repository:**
    ```bash
    https://github.com/unkn0t/music-box.git
-   cd musicbox
+   cd music-box
    ```
    
 2.  **Frontend Setup (Angular):**
@@ -67,7 +67,7 @@ Welcome to **MusicBox** – the ultimate web application that lets you dive into
     ```bash
     cd backend
     python -m venv .venv
-    source .venv/bin/activate  # For Windows use: env\Scripts\activate
+    source .venv/bin/activate  # For Windows use: .venv\Scripts\activate
     pip install -r requirements.txt
     python manage.py migrate
     python manage.py createsuperuser --username admin
