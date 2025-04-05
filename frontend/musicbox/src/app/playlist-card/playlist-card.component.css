@@ -1,0 +1,20 @@
+.playlist-img-container {
+  display: flex;
+  height: 150px;
+  width: auto;
+  align-items: center;
+}
+
+.playlist-img {
+  max-height: 100%;
+  width: 100%;
+  object-fit: fill;
+  aspect-ratio: initial;
+  border: none;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 0 10px 10px;
+}

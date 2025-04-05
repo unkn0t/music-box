@@ -1,9 +1,6 @@
 <div class="home-container">
   <div class="content">
-
-    <div class="song-list">
-      <app-artist-table></app-artist-table>
-    </div>
-
+    <app-artist-table></app-artist-table>
+    <app-playlist-table *ngIf="isLoggedIn"></app-playlist-table>
   </div>
 </div>

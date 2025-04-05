@@ -1,0 +1,8 @@
+.playlist-list {
+  display: grid;
+  column-gap: 14px;
+  row-gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 200px));
+  justify-content: space-around;
+  padding: 10px;
+}

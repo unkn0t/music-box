@@ -1,7 +1,5 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {Track} from '../track';
-import {AlbumService} from '../album.service';
-import {ActivatedRoute} from '@angular/router';
 import {NgForOf} from '@angular/common';
 import {PlayerService} from '../player.service';
 
@@ -13,20 +11,10 @@ import {PlayerService} from '../player.service';
   templateUrl: './track-list.component.html',
   styleUrl: './track-list.component.css'
 })
-export class TrackListComponent implements OnInit {
-  tracks: Track[] = [];
+export class TrackListComponent {
+  @Input() tracks: Track[] = [];
 
-  private albumService = inject(AlbumService);
-  private route = inject(ActivatedRoute);
   private playerService = inject(PlayerService);
-
-  ngOnInit(): void {
-    const id = BigInt(this.route.snapshot.params['id']);
-
-    this.albumService.listTracksOf(id).subscribe((data) => {
-      this.tracks = data;
-    });
-  }
 
   selectTrack(track: Track) {
     this.playerService.selectTrack(track);

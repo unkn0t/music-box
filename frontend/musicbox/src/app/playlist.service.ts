@@ -8,7 +8,7 @@ import {Track} from './track';
   providedIn: 'root'
 })
 export class PlaylistService {
-  private apiUrl = 'http://localhost:8000/api/';
+  private apiUrl = 'http://localhost:8000/api';
   private plistUrl = `${this.apiUrl}/playlists`;
 
   private http = inject(HttpClient);

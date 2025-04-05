@@ -1,0 +1,9 @@
+<div class="card" style="width: 10rem;" (click)="goToTracks()">
+  <div class="playlist-img-container">
+    <img [src]="getCover()" class="card-img-top playlist-img" alt="{{playlist.name}}">
+  </div>
+  <div class="card-body">
+    <h6 class="card-title">{{ playlist.name }}</h6>
+    <p class="card-text"><small class="text-body-secondary">{{ playlist.owner }} • {{ playlist.tracks.length }} songs</small></p>
+  </div>
+</div>
