@@ -1,5 +1,5 @@
 <app-header *ngIf="showHeader"></app-header>
 <div class="fixed-audio-player" *ngIf="showPlayer">
-  <app-player [song]="undefined"></app-player>
+  <app-player [track]="track"></app-player>
 </div>
 <router-outlet />

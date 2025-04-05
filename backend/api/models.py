@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from mutagen.mp3 import MP3
+
 
 class Artist(models.Model):
     name = models.CharField(max_length=512)
@@ -36,11 +38,25 @@ class Album(models.Model):
 class Track(models.Model):
     name = models.CharField(max_length=256)
     album = models.ForeignKey(Album, on_delete=models.CASCADE)
+    duration_ms = models.PositiveIntegerField(
+        editable=False, null=True, blank=True
+    )
     artists = models.ManyToManyField(Artist)
     audio = models.FileField(upload_to="assets/songs/audios/")
 
     def __str__(self):
         return f"{self.name}({self.id})"
+
+    def save(self, *args, **kwargs):
+        if self.audio and not self.duration_ms:
+            try:
+                audio = MP3(self.audio)
+                self.duration_ms = int(audio.info.length * 1000)
+            except Exception as e:
+                print(f"Error reading MP3 file: {e}")
+                self.duration_ms = 0  # Fallback if there's an issue
+
+        super().save(*args, **kwargs)
 
 
 class Playlist(models.Model):

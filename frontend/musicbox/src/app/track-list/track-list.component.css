@@ -1,0 +1,84 @@
+.track-list-container {
+  max-height: calc(100vh - 200px); /* Adjusts height dynamically */
+  overflow-y: auto; /* Enables scrolling only when necessary */
+  padding-right: 10px; /* Prevents scrollbar from covering content */
+  display: flex;
+  flex-direction: column;
+}
+
+.track-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0 8px 0;
+  font-weight: bold;
+  margin: 40px;
+}
+
+.track-number-header {
+  text-align: left;
+  flex: 1;
+}
+
+.track-title-header {
+  text-align: left;
+  flex: 5;
+}
+
+.track-duration-header {
+  text-align: right;
+  width: 80px; /* Match duration column width */
+}
+
+/* Style for the ordered list and track rows */
+.track-list {
+  list-style: none; /* Remove the default numbering */
+  counter-reset: track; /* Initialize a custom counter */
+  padding-left: 20px; /* Adjust for numbering alignment */
+  margin: 30px;
+  flex-grow: 1; /* Allows list to expand dynamically */
+}
+
+.track-list li {
+  position: relative;
+  padding-left: 2.5em; /* Space for the custom number */
+  border-bottom: 1px solid #ddd;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* Create custom numbering without a dot */
+.track-list li::before {
+  counter-increment: track;
+  content: counter(track); /* Just the number */
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2em;
+  text-align: right;
+  font-weight: bold;
+}
+
+.track-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.track-row:hover {
+  cursor: pointer;
+}
+
+.track-name {
+  margin-left: 10px;
+  text-align: left;
+  flex: 1;
+}
+
+.track-duration {
+  text-align: right;
+  width: 80px;
+}
+

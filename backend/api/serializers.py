@@ -12,6 +12,7 @@ class ArtistSerializer(serializers.ModelSerializer):
 
 class AlbumSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
+    artists = ArtistSerializer(many=True)
 
     class Meta:
         model = Album
@@ -28,10 +29,12 @@ class AlbumSerializer(serializers.ModelSerializer):
 
 class TrackSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
+    duration_ms = serializers.ReadOnlyField()
+    artists = ArtistSerializer(many=True)
 
     class Meta:
         model = Track
-        fields = ["id", "name", "album", "artists", "audio"]
+        fields = ["id", "name", "duration_ms", "album", "artists", "audio"]
 
 
 class PlaylistSerializer(serializers.ModelSerializer):

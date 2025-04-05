@@ -1,10 +1,9 @@
 <div class="audio-player">
-  <div id="left">{{ song?.name }}</div>
+  <div id="left">{{ track?.name }}</div>
   <div id="center">
     <div id="control">
       <audio #audioPlayer (timeupdate)="updateCurrentTime()" (loadedmetadata)="setDuration()">
-        <!-- Подставляем динамический источник. Если песня не выбрана, используется дефолтный sample -->
-        <source [src]="song?.src" type="audio/mpeg">
+        <source [src]="getTrackUrl()" type="audio/mpeg">
         Your browser does not support the audio element.
       </audio>
 

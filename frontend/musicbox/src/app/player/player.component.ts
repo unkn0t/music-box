@@ -1,5 +1,6 @@
-import {Component, OnInit, OnChanges, SimpleChanges, ViewChild, ElementRef, Input, AfterViewInit} from '@angular/core';
+import {Component, OnChanges, SimpleChanges, ViewChild, ElementRef, Input, AfterViewInit} from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
+import {Track} from '../track';
 
 @Component({
   selector: 'app-player',
@@ -9,7 +10,7 @@ import { CommonModule, NgIf } from '@angular/common';
   styleUrls: ['./player.component.css']
 })
 export class PlayerComponent implements AfterViewInit, OnChanges {
-  @Input() song: any;
+  @Input() track: Track | undefined;
   @ViewChild('audioPlayer') audioPlayer!: ElementRef<HTMLAudioElement>;
   @ViewChild('timeSlider') timeSlider!: ElementRef<HTMLInputElement>;
   @ViewChild('volumeSlider') volumeSlider!: ElementRef<HTMLInputElement>;
@@ -21,15 +22,25 @@ export class PlayerComponent implements AfterViewInit, OnChanges {
   duration: number = 0;
   volume: number = 0.7;
 
+  private backendUrl = 'http://localhost:8000';
+
   ngAfterViewInit(): void {
     this.updateSliderBackground(this.volumeSlider.nativeElement, this.volume * 100);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['song'] && this.audioPlayer && this.song) {
-      this.audioPlayer.nativeElement.src = this.song.src;
+    if (changes['track'] && this.audioPlayer && this.track) {
+      this.audioPlayer.nativeElement.src = this.getTrackUrl();
       this.audioPlayer.nativeElement.load();
       this.playAudio();
+    }
+  }
+
+  getTrackUrl(): string {
+    if (this.track) {
+      return `${this.backendUrl}${this.track.audio}`;
+    } else {
+      return '#';
     }
   }
 

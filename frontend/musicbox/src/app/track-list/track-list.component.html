@@ -1,0 +1,20 @@
+<div class="track-list-container">
+  <div class="track-header">
+    <span class="track-number-header">#</span>
+    <span class="track-title-header">Title</span>
+    <span class="track-artists-header">Artist</span>
+    <span class="track-duration-header">
+      <i class="bi bi-clock"></i>
+    </span>
+  </div>
+  <hr>
+  <ol class="track-list">
+    <li *ngFor="let track of tracks">
+      <div class="track-row" (click)="selectTrack(track)">
+        <span class="track-name">{{ track.name }}</span>
+        <span class="track-artists">{{ getArtistsNames(track) }}</span>
+        <span class="track-duration">{{ getDuration(track) }}</span>
+      </div>
+    </li>
+  </ol>
+</div>

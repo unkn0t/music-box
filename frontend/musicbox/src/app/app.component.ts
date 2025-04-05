@@ -1,9 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {ActivatedRoute, Data, NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {HeaderComponent} from './header/header.component';
-import {filter, map, mergeMap} from 'rxjs';
+import {filter, map, mergeMap, Subscription} from 'rxjs';
 import {NgIf} from '@angular/common';
 import {PlayerComponent} from './player/player.component';
+import {Track} from './track';
+import {PlayerService} from './player.service';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +19,19 @@ export class AppComponent implements OnInit {
   showHeader = true;
   showPlayer = true;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  track: Track | undefined;
+
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  private playerService = inject(PlayerService);
+
+  private playerSub: Subscription;
+
+  constructor() {
+    this.playerSub = this.playerService.selectedTrack$.subscribe(track => {
+      this.track = track;
+    })
+  }
 
   ngOnInit(): void {
     this.router.events

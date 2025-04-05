@@ -8,6 +8,7 @@ djangorestframework_simplejwt==5.5.0
 docstring-to-markdown==0.16
 importlib_metadata==8.6.1
 jedi==0.19.2
+mutagen==1.47.0
 mypy-extensions==1.0.0
 packaging==24.2
 parso==0.8.4
