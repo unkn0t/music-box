@@ -1,0 +1,44 @@
+.playlist-container {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  padding: 16px 16px 0;
+}
+
+.playlist-header {
+  display: flex;
+  padding: 0 40px 20px;
+}
+
+.playlist-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.playlist-name {
+  font-weight: bolder;
+  font-size: 3em;
+}
+
+.playlist-extra {
+  color: gray;
+}
+
+.data-type {
+  color: #aaaaaa;
+}
+
+.playlist-img {
+  border-radius: 4px;
+  width: 128px;
+  height: 128px;
+  box-shadow: 0 4px 60px rgba(0,0,0,.5);
+  margin-right: 30px;
+}
+
+.playlist-img img {
+  border-radius: 4px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}

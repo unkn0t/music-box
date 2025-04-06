@@ -38,6 +38,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  column-gap: 30px;
   width: 100%;
   padding-bottom: 10px;
 }

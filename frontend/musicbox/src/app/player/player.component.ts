@@ -20,11 +20,12 @@ export class PlayerComponent implements AfterViewInit, OnChanges {
   isLooping: boolean = false;
   currentTime: number = 0;
   duration: number = 0;
-  volume: number = 0.7;
+  volume: number = 0.5;
 
   private backendUrl = 'http://localhost:8000';
 
   ngAfterViewInit(): void {
+    this.audioPlayer.nativeElement.volume = this.logarithmicVolume(this.volume);
     this.updateSliderBackground(this.volumeSlider.nativeElement, this.volume * 100);
   }
 
@@ -85,8 +86,12 @@ export class PlayerComponent implements AfterViewInit, OnChanges {
 
   changeVolume(event: any) {
     this.volume = event.target.value;
-    this.audioPlayer.nativeElement.volume = this.volume;
+    this.audioPlayer.nativeElement.volume = this.logarithmicVolume(this.volume);
     this.updateSliderBackground(event.target as HTMLInputElement, this.volume * 100);
+  }
+
+  logarithmicVolume(volume: number): number {
+    return (Math.pow(10, volume) - 1) / 9;
   }
 
   toggleMute() {

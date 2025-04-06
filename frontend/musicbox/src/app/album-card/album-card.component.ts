@@ -18,6 +18,12 @@ export class AlbumCardComponent {
     return `${this.backendUrl}${this.album.cover}`;
   }
 
+  getType(): string | undefined {
+    if (!this.album) return undefined;
+    const type = this.album.album_type;
+    return type[0].toUpperCase() + type.slice(1);
+  }
+
   getReleaseYear(): number {
     const date = new Date(this.album.release_date);
     return date.getFullYear();

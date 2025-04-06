@@ -6,7 +6,8 @@ import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 @Component({
   selector: 'app-header',
   imports: [NgIf, RouterLink, RouterLinkActive],
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
   isLoggedIn = false;

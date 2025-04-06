@@ -1,2 +1,19 @@
-<h1>{{ album?.name }}</h1>
-<app-track-list [tracks]="tracks"></app-track-list>
+<div class="playlist-container">
+  <div class="playlist-header">
+    <div class="playlist-img">
+      <img [src]="getCover()" [alt]="album?.name">
+    </div>
+    <div class="playlist-data">
+      <span class="data-type">{{ getType() }}</span>
+      <span class="playlist-name">{{ album?.name }}</span>
+      <div class="playlist-extra">
+        <span class="playlist-author">{{ getArtistsNames() }}</span>
+        <span> • </span>
+        <span class="playlist-year">{{ getReleaseYear() }}</span>
+        <span> • </span>
+        <span class="playlist-duration">{{ tracks.length }} songs, about {{ getDuration() }}</span>
+      </div>
+    </div>
+  </div>
+  <app-track-list [tracks]="tracks"></app-track-list>
+</div>

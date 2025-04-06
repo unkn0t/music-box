@@ -18,6 +18,7 @@ export class PlaylistDetailsComponent implements OnInit {
 
   tracks: Track[] = [];
 
+  private backendUrl = 'http://localhost:8000';
   private playlistService = inject(PlaylistService);
   private route = inject(ActivatedRoute);
 
@@ -31,5 +32,23 @@ export class PlaylistDetailsComponent implements OnInit {
     this.playlistService.listTracksOf(id).subscribe(data => {
       this.tracks = data;
     });
+  }
+
+  getCover(): string {
+    return `${this.backendUrl}${this.playlist?.cover}`;
+  }
+
+  getDuration(): string {
+    let total_duration = 0;
+    for (const track of this.tracks) {
+      total_duration += track.duration_ms;
+    }
+    return this.formatTime(Math.floor(total_duration / 60000));
+  }
+
+  formatTime(minutes: number): string {
+    const hours = Math.floor(minutes / 60);
+    const mins = Math.floor(minutes % 60);
+    return `${hours} hr ${mins < 10 ? '0' : ''}${mins} min`;
   }
 }
