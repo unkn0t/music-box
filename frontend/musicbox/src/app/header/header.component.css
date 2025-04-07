@@ -3,3 +3,13 @@
   top: 0;
   z-index: 2;
 }
+
+#logo {
+  display: flex;
+  font-weight: bold;
+  align-items: center;
+}
+
+#logo img {
+  margin-right: 10px;
+}

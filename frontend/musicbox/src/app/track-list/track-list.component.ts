@@ -2,11 +2,14 @@ import {Component, inject, Input} from '@angular/core';
 import {Track} from '../track';
 import {NgForOf} from '@angular/common';
 import {PlayerService} from '../player.service';
+import {RouterLink, RouterLinkActive} from '@angular/router';
 
 @Component({
   selector: 'app-track-list',
   imports: [
-    NgForOf
+    NgForOf,
+    RouterLink,
+    RouterLinkActive
   ],
   templateUrl: './track-list.component.html',
   styleUrl: './track-list.component.css'

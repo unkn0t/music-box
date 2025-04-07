@@ -42,6 +42,15 @@
   margin: auto;
 }
 
+a.track-field {
+  color: inherit;
+  text-decoration: none;
+}
+
+a.track-field:hover {
+  text-decoration: underline;
+}
+
 .track-name {
   text-align: left;
   line-height: 56px;

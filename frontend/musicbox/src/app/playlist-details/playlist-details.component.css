@@ -42,3 +42,36 @@
   object-fit: cover;
   object-position: center center;
 }
+
+.playlist-manage {
+  display: flex;
+  align-items: center;
+  column-gap: 20px;
+  font-size: 26px;
+  padding: 0 40px;
+}
+
+.control-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: whitesmoke;
+  transition: color 0.5s;
+}
+
+.play-button {
+  font-size: 48px;
+  margin-right: 20px;
+}
+
+.delete-btn:hover {
+  color: red;
+}
+
+.play-button:hover {
+  color: #007bff;
+}
+
+.edit-btn:hover {
+  color: #aaaaaa;
+}

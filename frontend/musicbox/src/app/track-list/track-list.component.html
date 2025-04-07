@@ -13,7 +13,9 @@
       <div class="track-row track-grid" (click)="selectTrack(track)">
         <span class="track-field">{{ trackNum + 1 }}</span>
         <div class="track-name">{{ track.name }}</div>
-        <span class="track-field">{{ getArtistsNames(track) }}</span>
+        <a class="track-field" routerLink="/artists/{{ track.artists[0].id }}"
+           routerLinkActive="active"
+           ariaCurrentWhenActive="page"><span>{{ getArtistsNames(track) }}</span></a>
         <span class="track-field">{{ getDuration(track) }}</span>
       </div>
     </li>

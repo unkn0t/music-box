@@ -9,3 +9,25 @@ html, body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+/* Dark Mode for SweetAlert2 */
+.dark-mode-popup {
+  background-color: #1e1e1e !important; /* Dark background */
+  color: #ffffff !important; /* White text */
+  border: 1px solid #444 !important;
+}
+
+.dark-mode-title {
+  color: #ffffff !important; /* White title */
+}
+
+.dark-mode-confirm {
+  background-color: #d33 !important;
+  color: white !important;
+}
+
+.dark-mode-cancel {
+  background-color: #3085d6 !important;
+  color: white !important;
+}
+

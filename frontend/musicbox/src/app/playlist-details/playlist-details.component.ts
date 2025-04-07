@@ -4,6 +4,7 @@ import {PlaylistService} from '../playlist.service';
 import {ActivatedRoute} from '@angular/router';
 import {Playlist} from '../playlist';
 import {TrackListComponent} from '../track-list/track-list.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-playlist-details',
@@ -44,6 +45,41 @@ export class PlaylistDetailsComponent implements OnInit {
       total_duration += track.duration_ms;
     }
     return this.formatTime(Math.floor(total_duration / 60000));
+  }
+
+  confirmDelete() {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      customClass: {
+        popup: 'dark-mode-popup',  // Custom CSS class
+        title: 'dark-mode-title',
+        confirmButton: 'dark-mode-confirm',
+        cancelButton: 'dark-mode-cancel'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.deleteItem();
+        Swal.fire({
+          title: "Deleted!",
+          text: `Playlist ${this.playlist?.name} has been deleted.`,
+          icon: "success",
+          customClass: {
+            popup: 'dark-mode-popup',
+            title: 'dark-mode-title',
+            confirmButton: 'dark-mode-confirm',
+          }
+      });
+      }
+    });
+  }
+
+  deleteItem() {
+    if (this.playlist)
+      this.playlistService.delete(this.playlist.id);
   }
 
   formatTime(minutes: number): string {
