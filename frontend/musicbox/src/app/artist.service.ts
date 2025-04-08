@@ -17,15 +17,15 @@ export class ArtistService {
     return this.http.get<Artist[]>(`${this.apiUrl}/`);
   }
 
-  getById(id: bigint): Observable<Artist> {
+  getById(id: string): Observable<Artist> {
     return this.http.get<Artist>(`${this.apiUrl}/${id}/`)
   }
 
-  listAlbumsOf(id: bigint): Observable<Album[]> {
+  listAlbumsOf(id: string): Observable<Album[]> {
     return this.http.get<Album[]>(`${this.apiUrl}/${id}/albums/`);
   }
 
-  listTracksOf(id: bigint): Observable<Track[]> {
+  listTracksOf(id: string): Observable<Track[]> {
     return this.http.get<Track[]>(`${this.apiUrl}/${id}/tracks/`);
   }
 }

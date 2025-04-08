@@ -24,7 +24,7 @@ export class PlaylistDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
 
   ngOnInit(): void {
-    const id = BigInt(this.route.snapshot.params['id']);
+    const id: string = this.route.snapshot.params['id'];
 
     this.playlistService.getById(id).subscribe(data => {
       this.playlist = data;

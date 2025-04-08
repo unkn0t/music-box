@@ -70,8 +70,6 @@ Welcome to **MusicBox** – the ultimate web application that lets you dive into
     source .venv/bin/activate  # For Windows use: .venv\Scripts\activate
     pip install -r requirements.txt
     python manage.py migrate
-    python manage.py createsuperuser --username admin
-    python generate.py demo.json # This will generate demo database data 
     python manage.py runserver
     ```
     

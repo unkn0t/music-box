@@ -1,9 +1,9 @@
 import {Artist} from './artist';
 
 export interface Track {
-  id: bigint,
+  id: string,
   name: string,
-  albumId: bigint,
+  albumId: string,
   duration_ms: number,
   artists: Artist[],
   audio: string,

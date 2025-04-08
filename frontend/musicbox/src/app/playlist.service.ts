@@ -13,15 +13,15 @@ export class PlaylistService {
 
   private http = inject(HttpClient);
 
-  getById(id: bigint): Observable<Playlist> {
+  getById(id: string): Observable<Playlist> {
     return this.http.get<Playlist>(`${this.plistUrl}/${id}/`);
   }
 
-  update(id: bigint, playlist: Playlist): Observable<Playlist> {
+  update(id: string, playlist: Playlist): Observable<Playlist> {
     return this.http.put<Playlist>(`${this.plistUrl}/${id}/`, playlist);
   }
 
-  delete(id: bigint) {
+  delete(id: string) {
     this.http.delete(`${this.plistUrl}/${id}/`);
   }
 
@@ -33,7 +33,7 @@ export class PlaylistService {
     return this.http.get<Playlist[]>(`${this.apiUrl}/me/playlists/`);
   }
 
-  listTracksOf(id: bigint): Observable<Track[]> {
+  listTracksOf(id: string): Observable<Track[]> {
     return this.http.get<Track[]>(`${this.plistUrl}/${id}/tracks/`);
   }
 }

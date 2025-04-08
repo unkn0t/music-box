@@ -12,11 +12,11 @@ export class AlbumService {
 
   private http = inject(HttpClient);
 
-  getById(id: bigint): Observable<Album> {
+  getById(id: string): Observable<Album> {
     return this.http.get<Album>(`${this.apiUrl}/${id}/`)
   }
 
-  listTracksOf(id: bigint): Observable<Track[]> {
+  listTracksOf(id: string): Observable<Track[]> {
     return this.http.get<Track[]>(`${this.apiUrl}/${id}/tracks/`);
   }
 }

@@ -1,7 +1,7 @@
 import {Artist} from './artist';
 
 export interface Album {
-  id: bigint,
+  id: string,
   name: string,
   album_type: string,
   cover: string,

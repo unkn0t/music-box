@@ -69,9 +69,12 @@ class AlbumDetails(APIView):
 
 @api_view(["GET"])
 def album_list_tracks(request, album_id):
-    tracks = Track.objects.filter(album__id=album_id)
-    serializer = TrackSerializer(tracks, many=True)
-    return Response(serializer.data)
+    try:
+        tracks = Album.objects.get(pk=album_id).tracks.order_by("track_number")
+        serializer = TrackSerializer(tracks, many=True)
+        return Response(serializer.data)
+    except Album.DoesNotExist as e:
+        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
 
 class PlaylistList(APIView):
@@ -132,6 +135,11 @@ class PlaylistDetails(APIView):
 @api_view(["GET"])
 @permission_classes([permissions.IsAuthenticated, IsOwner])
 def playlist_list_tracks(request, playlist_id):
-    tracks = Playlist.objects.get(pk=playlist_id).tracks
-    serializer = TrackSerializer(tracks, many=True)
-    return Response(serializer.data)
+    try:
+        tracks = Playlist.objects.get(pk=playlist_id).tracks.order_by(
+            "track_number"
+        )
+        serializer = TrackSerializer(tracks, many=True)
+        return Response(serializer.data)
+    except Playlist.DoesNotExist as e:
+        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)

@@ -21,7 +21,7 @@ export class AlbumTableComponent implements OnInit {
   private route = inject(ActivatedRoute);
 
   ngOnInit(): void {
-    const artistId = BigInt(this.route.snapshot.params['id']);
+    const artistId: string = this.route.snapshot.params['id'];
 
     this.artistService.listAlbumsOf(artistId).subscribe((data) => {
       this.albums = data;

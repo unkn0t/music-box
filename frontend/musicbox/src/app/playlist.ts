@@ -1,7 +1,7 @@
 export interface Playlist {
-  id: bigint,
+  id: string,
   name: string,
   cover: string,
-  tracks: bigint[],
+  tracks: string[],
   owner: string,
 }
