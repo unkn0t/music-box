@@ -18,7 +18,7 @@ export class PlaylistTableComponent {
 
   private playlistService = inject(PlaylistService);
 
-  ngOnInit() {
+  constructor() {
     this.playlistService.listCurrent().subscribe((data) => {
       this.playlists = data;
     });
