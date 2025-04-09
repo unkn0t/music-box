@@ -6,3 +6,16 @@
   justify-content: space-around;
   padding: 10px;
 }
+
+#add-button {
+  width: 10rem;
+  background-color: gray;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 4px 60px rgba(0,0,0,.5);
+}
+
+#add-button:hover {
+  background-color: #aaaaaa;
+}

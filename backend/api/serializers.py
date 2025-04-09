@@ -1,5 +1,14 @@
 from rest_framework import serializers
 from .models import Artist, Album, Track, Playlist
+from django.contrib.auth.models import User
+
+
+class UserSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    class Meta:
+        model = User
+        fields = ["id", "username", "email"]
 
 
 class ArtistSerializer(serializers.ModelSerializer):

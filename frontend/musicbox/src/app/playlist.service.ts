@@ -26,7 +26,10 @@ export class PlaylistService {
   }
 
   create(playlist: Playlist): Observable<Playlist> {
-    return this.http.post<Playlist>(`${this.apiUrl}/me/playlists/`, playlist);
+    return this.http.post<Playlist>(`${this.apiUrl}/me/playlists/`, {
+      name: playlist.name,
+      tracks: playlist.tracks,
+    });
   }
 
   listCurrent(): Observable<Playlist[]> {

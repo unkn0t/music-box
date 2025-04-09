@@ -11,7 +11,20 @@ from .serializers import (
     ArtistSerializer,
     PlaylistSerializer,
     TrackSerializer,
+    UserSerializer,
 )
+
+
+class UserDetails(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        try:
+            user = User.objects.get(pk=request.user.id)
+            serializer = UserSerializer(user)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.data)
 
 
 class UserListPlaylists(APIView):
