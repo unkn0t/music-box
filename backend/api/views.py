@@ -1,10 +1,14 @@
+from uuid import UUID
+
 from django.contrib.auth.models import User
-from rest_framework import status, permissions
-from rest_framework.decorators import api_view, permission_classes
+from django.db import transaction
+from django.utils import timezone
+from rest_framework import permissions, status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Album, Artist, Playlist, Track
+from .models import Album, Artist, Playlist, PlaylistTracks, Track
 from .permissions import IsOwner
 from .serializers import (
     AlbumSerializer,
@@ -145,14 +149,86 @@ class PlaylistDetails(APIView):
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(["GET"])
-@permission_classes([permissions.IsAuthenticated, IsOwner])
-def playlist_list_tracks(request, playlist_id):
-    try:
-        tracks = Playlist.objects.get(pk=playlist_id).tracks.order_by(
-            "track_number"
+class PlaylistListTracks(APIView):
+    permission_classes = (permissions.IsAuthenticated, IsOwner)
+
+    def get(self, request, playlist_id, format=None):
+        try:
+            tracks = Playlist.objects.get(pk=playlist_id).tracks.order_by(
+                "track_number"
+            )
+            serializer = TrackSerializer(tracks, many=True)
+            return Response(serializer.data)
+        except Playlist.DoesNotExist as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request, playlist_id, format=None):
+        data = request.data
+        position = data.get("position")
+        track_ids = data.get("track_ids", [])
+
+        # Validate playlist existence
+        try:
+            playlist = Playlist.objects.get(id=playlist_id)
+        except (Playlist.DoesNotExist, ValueError):
+            return Response(
+                {"error": "Invalid playlist ID"},
+                status == status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Validate that 'position' is an integer and at least 0
+        if not isinstance(position, int) or position < 0:
+            return Response(
+                {"error": "Invalid position value"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Validate track_ids format and existence
+        try:
+            track_ids = [UUID(tid) for tid in track_ids]
+        except ValueError:
+            return Response(
+                {"error": "One or more invalid track UUIDs"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        tracks = Track.objects.filter(id__in=track_ids)
+        if tracks.count() != len(track_ids):
+            existing_ids = {str(track.id) for track in tracks}
+            missing_ids = [
+                str(tid) for tid in track_ids if str(tid) not in existing_ids
+            ]
+            return Response(
+                {"error": f"Tracks not found: {missing_ids}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        with transaction.atomic():
+            shift_count = len(track_ids)
+            existing_playlist_tracks = PlaylistTracks.objects.filter(
+                playlist=playlist, track_number__gt=position
+            )
+
+            for item in existing_playlist_tracks.order_by("-track_number"):
+                item.track_number += shift_count
+                item.save()
+
+            new_playlist_tracks = []
+            for i, tid in enumerate(track_ids):
+                new_track_number = position + i
+                new_playlist_tracks.append(
+                    PlaylistTracks(
+                        playlist=playlist,
+                        track_id=tid,
+                        track_number=new_track_number,
+                    )
+                )
+            PlaylistTracks.objects.bulk_create(new_playlist_tracks)
+
+            playlist.updated_at = timezone.now()
+            playlist.save()
+
+        return Response(
+            {"message": "Tracks inserted successfully"},
+            status=status.HTTP_201_CREATED,
         )
-        serializer = TrackSerializer(tracks, many=True)
-        return Response(serializer.data)
-    except Playlist.DoesNotExist as e:
-        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)

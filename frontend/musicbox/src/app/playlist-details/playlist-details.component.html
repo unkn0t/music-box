@@ -9,18 +9,18 @@
       <div class="playlist-extra">
         <span class="playlist-author">{{ playlist?.owner }}</span>
         <span> • </span>
-        <span class="playlist-duration">{{ tracks.length }} songs, about {{ getDuration() }}</span>
+        <span class="playlist-duration">{{ tracks.length }} songs, about {{ getAboutDuration() }}</span>
       </div>
     </div>
   </div>
   <div class="playlist-manage">
-    <button class="control-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Play {{ playlist?.name }}">
+    <button class="control-btn" (click)="addToQueue()" data-bs-toggle="tooltip" data-bs-placement="top" title="Play {{ playlist?.name }}">
         <span class="play-button"><i class="bi bi-play-circle-fill"></i></span>
     </button>
     <button class="control-btn" (click)="confirmDelete()" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete playlist">
       <span class="delete-btn"><i class="bi bi-file-earmark-minus"></i></span>
     </button>
-    <button class="control-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit details">
+    <button class="control-btn" (click)="showUpdate()" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit details">
       <span class="edit-btn"><i class="bi bi-pencil-square"></i></span>
     </button>
   </div>

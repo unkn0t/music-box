@@ -4,6 +4,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Track} from '../track';
 import {Album} from '../album';
 import {TrackListComponent} from '../track-list/track-list.component';
+import {TimeFormatter} from '../time-formatter';
 
 @Component({
   selector: 'app-album-details',
@@ -54,17 +55,11 @@ export class AlbumDetailsComponent implements OnInit {
     return this.album?.artists.map((artist) => artist.name).join(',');
   }
 
-  getDuration(): string {
-    let total_duration = 0;
+  getAboutDuration(): string {
+    let totalDuration = 0;
     for (const track of this.tracks) {
-      total_duration += track.duration_ms;
+      totalDuration += track.duration_ms;
     }
-    return this.formatTime(Math.floor(total_duration / 60000));
-  }
-
-  formatTime(minutes: number): string {
-    const hours = Math.floor(minutes / 60);
-    const mins = Math.floor(minutes % 60);
-    return `${hours} hr ${mins < 10 ? '0' : ''}${mins} min`;
+    return TimeFormatter.formatAbout(totalDuration);
   }
 }

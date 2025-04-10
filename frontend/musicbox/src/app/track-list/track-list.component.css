@@ -18,9 +18,8 @@
 
 .track-grid {
   display: grid;
-  grid-gap: 16px;
   padding: 0 16px;
-  grid-template-columns: [index] 3% [name] 42% [artist] 35% [duration] 20%;
+  grid-template-columns: [index] 3% [name] 42% [artist] 40% [duration] 10% [playlist-add] 5%;
 }
 
 .track-row {
@@ -54,4 +53,15 @@ a.track-field:hover {
 .track-name {
   text-align: left;
   line-height: 56px;
+}
+
+.track-playlist-add {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.track-row:hover .track-playlist-add {
+  opacity: 1;
+  visibility: visible;
 }

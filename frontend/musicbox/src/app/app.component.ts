@@ -19,19 +19,8 @@ export class AppComponent implements OnInit {
   showHeader = true;
   showPlayer = true;
 
-  track: Track | undefined;
-
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
-  private playerService = inject(PlayerService);
-
-  private playerSub: Subscription;
-
-  constructor() {
-    this.playerSub = this.playerService.selectedTrack$.subscribe(track => {
-      this.track = track;
-    })
-  }
 
   ngOnInit(): void {
     this.router.events

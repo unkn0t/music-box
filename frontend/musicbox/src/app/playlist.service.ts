@@ -17,12 +17,17 @@ export class PlaylistService {
     return this.http.get<Playlist>(`${this.plistUrl}/${id}/`);
   }
 
-  update(id: string, playlist: Playlist): Observable<Playlist> {
-    return this.http.put<Playlist>(`${this.plistUrl}/${id}/`, playlist);
+  update(id: string, name: string, cover: File | undefined): Observable<Playlist> {
+    const formData = new FormData();
+    formData.append('name', name);
+    if (cover) {
+      formData.append('cover', cover);
+    }
+    return this.http.put<Playlist>(`${this.plistUrl}/${id}/`, formData);
   }
 
-  delete(id: string) {
-    this.http.delete(`${this.plistUrl}/${id}/`);
+  delete(id: string): Observable<any> {
+    return this.http.delete(`${this.plistUrl}/${id}/`);
   }
 
   create(playlist: Playlist): Observable<Playlist> {

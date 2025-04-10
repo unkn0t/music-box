@@ -1,48 +1,72 @@
-import {Component, OnChanges, SimpleChanges, ViewChild, ElementRef, Input, AfterViewInit} from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
+import {Component, ViewChild, ElementRef, AfterViewInit, inject, OnInit} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {TimeFormatter} from '../time-formatter';
+import {PlayerService} from '../player.service';
 import {Track} from '../track';
 
 @Component({
   selector: 'app-player',
   standalone: true,
-  imports: [NgIf,CommonModule],
+  imports: [CommonModule],
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.css']
 })
-export class PlayerComponent implements AfterViewInit, OnChanges {
-  @Input() track: Track | undefined;
+export class PlayerComponent implements OnInit, AfterViewInit {
   @ViewChild('audioPlayer') audioPlayer!: ElementRef<HTMLAudioElement>;
   @ViewChild('timeSlider') timeSlider!: ElementRef<HTMLInputElement>;
   @ViewChild('volumeSlider') volumeSlider!: ElementRef<HTMLInputElement>;
 
+  track: Track | undefined;
   isPlaying: boolean = false;
   isMuted: boolean = false;
   isLooping: boolean = false;
-  currentTime: number = 0;
-  duration: number = 0;
-  volume: number = 0.5;
+  currentTimeMillis: number = 0;
+  durationMillis: number = 0;
+  volume: number = 0.6;
 
   private backendUrl = 'http://localhost:8000';
+  private playerService = inject(PlayerService);
+
+  ngOnInit() {
+    this.playerService.currentTrack$.subscribe(current => {
+      this.loadTrack(current);
+    });
+  }
+
+  private loadTrack(track: Track | undefined) {
+    if (track) {
+      this.audioPlayer.nativeElement.src = `${this.backendUrl}${track.audio}`;
+      this.track = track;
+      this.durationMillis = track.duration_ms;
+      this.audioPlayer.nativeElement.load();
+      this.audioPlayer.nativeElement.onloadedmetadata = (event) => {
+        console.log(this.audioPlayer.nativeElement.duration)
+      };
+      this.playAudio();
+    } else {
+      this.pauseAudio();
+    }
+  }
 
   ngAfterViewInit(): void {
     this.audioPlayer.nativeElement.volume = this.logarithmicVolume(this.volume);
     this.updateSliderBackground(this.volumeSlider.nativeElement, this.volume * 100);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['track'] && this.audioPlayer && this.track) {
-      this.audioPlayer.nativeElement.src = this.getTrackUrl();
-      this.audioPlayer.nativeElement.load();
-      this.playAudio();
-    }
+  hasPrev(): boolean {
+    return this.playerService.hasPrev();
   }
 
-  getTrackUrl(): string {
-    if (this.track) {
-      return `${this.backendUrl}${this.track.audio}`;
-    } else {
-      return '#';
-    }
+  hasNext(): boolean {
+    return this.playerService.hasNext();
+  }
+
+  getDurationInSecs(): number {
+    return Math.ceil(this.durationMillis / 1000);
+  }
+
+  getCurrentTimeInSecs(): number {
+    return Math.ceil(this.currentTimeMillis / 1000);
   }
 
   toggleAudio(): void {
@@ -58,8 +82,9 @@ export class PlayerComponent implements AfterViewInit, OnChanges {
   }
 
   playAudio(): void {
-    this.audioPlayer.nativeElement.play();
-    this.isPlaying = true;
+    this.audioPlayer.nativeElement.play().then(() => {
+      this.isPlaying = true;
+    }).catch(err => console.log(err));
   }
 
   pauseAudio(): void {
@@ -68,20 +93,16 @@ export class PlayerComponent implements AfterViewInit, OnChanges {
   }
 
   updateCurrentTime(): void {
-    this.currentTime = this.audioPlayer.nativeElement.currentTime;
-    this.updateSliderBackground(this.timeSlider.nativeElement, this.currentTime / this.duration * 100);
-  }
-
-  setDuration(): void {
-    this.duration = this.audioPlayer.nativeElement.duration;
+    this.currentTimeMillis = Math.ceil(this.audioPlayer.nativeElement.currentTime * 1000);
+    this.updateSliderBackground(this.timeSlider.nativeElement, this.currentTimeMillis / this.durationMillis * 100);
   }
 
   seekAudio(event: Event): void {
     const target = event.target as HTMLInputElement;
     const newTime = parseFloat(target.value);
     this.audioPlayer.nativeElement.currentTime = newTime;
-    this.currentTime = newTime;
-    this.updateSliderBackground(target, this.currentTime / this.duration * 100);
+    this.currentTimeMillis = Math.ceil(newTime * 1000);
+    this.updateSliderBackground(target, this.currentTimeMillis / this.durationMillis * 100);
   }
 
   changeVolume(event: any) {
@@ -104,17 +125,21 @@ export class PlayerComponent implements AfterViewInit, OnChanges {
     this.audioPlayer.nativeElement.loop = this.isLooping;
   }
 
-  seekForward() {
-    this.audioPlayer.nativeElement.currentTime += 10;
+  playNext() {
+    this.playerService.next();
   }
 
-  seekBackward() {
-    this.audioPlayer.nativeElement.currentTime -= 10;
+  playPrev() {
+    this.playerService.prev();
   }
 
-  formatTime(seconds: number): string {
-    const minutes = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+  getCurrentTime(): string {
+    return TimeFormatter.format(this.currentTimeMillis);
   }
+
+  getDuration(): string {
+    return TimeFormatter.format(this.durationMillis);
+  }
+
+  protected readonly onended = onended;
 }

@@ -3,6 +3,7 @@ import {Track} from '../track';
 import {NgForOf} from '@angular/common';
 import {PlayerService} from '../player.service';
 import {RouterLink, RouterLinkActive} from '@angular/router';
+import {TimeFormatter} from '../time-formatter';
 
 @Component({
   selector: 'app-track-list',
@@ -20,7 +21,7 @@ export class TrackListComponent {
   private playerService = inject(PlayerService);
 
   selectTrack(track: Track) {
-    this.playerService.selectTrack(track);
+    this.playerService.playTrack(track);
   }
 
   getArtistsNames(track: Track): string {
@@ -28,17 +29,6 @@ export class TrackListComponent {
   }
 
   getDuration(track: Track): string {
-    const secs = this.getDurationInSecs(track);
-    return this.formatTime(secs);
-  }
-
-  getDurationInSecs(track: Track): number {
-    return Math.trunc(track.duration_ms / 1000);
-  }
-
-  formatTime(seconds: number): string {
-    const minutes = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+    return TimeFormatter.format(track.duration_ms);
   }
 }

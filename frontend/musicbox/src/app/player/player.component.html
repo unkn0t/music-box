@@ -2,41 +2,42 @@
   <div id="left">{{ track?.name }}</div>
   <div id="center">
     <div id="control">
-      <audio #audioPlayer (timeupdate)="updateCurrentTime()" (loadedmetadata)="setDuration()">
-        <source [src]="getTrackUrl()" type="audio/mpeg">
+      <audio #audioPlayer (timeupdate)="updateCurrentTime()" (ended)="playNext()">
+        <source type="audio/mpeg">
         Your browser does not support the audio element.
       </audio>
 
-      <button class="control-btn" (click)="seekBackward()">
+      <button class="control-btn" (click)="playPrev()" [disabled]="!hasPrev()">
         <span class="material-icons">skip_previous</span>
       </button>
-      <button class="control-btn" (click)="toggleAudio()">
+      <button class="control-btn" (click)="toggleAudio()" [disabled]="track == undefined">
         <span class="material-icons">
           {{ isPlaying ? 'pause' : 'play_arrow' }}
         </span>
       </button>
-      <button class="control-btn" (click)="seekForward()">
+      <button class="control-btn" (click)="playNext()" [disabled]="!hasNext()">
         <span class="material-icons">skip_next</span>
       </button>
 
       <button class="control-btn" (click)="toggleLoop()">
-        <span class="material-icons" *ngIf="isLooping">loop</span>
-        <span class="material-icons" *ngIf="!isLooping">repeat</span>
+        <span class="material-icons">
+          {{ isLooping ? 'loop' : 'repeat' }}
+        </span>
       </button>
     </div>
 
     <div id="progress">
-      <div class="time-display">{{ formatTime(currentTime) }}</div>
+      <div class="time-display">{{ getCurrentTime() }}</div>
 
       <input #timeSlider
              type="range"
              class="progress-slider"
              min="0"
-             [max]="duration"
-             [value]="currentTime"
+             [max]="getDurationInSecs()"
+             [value]="getCurrentTimeInSecs()"
              (input)="seekAudio($event)">
 
-      <div class="time-display">{{ formatTime(duration) }}</div>
+      <div class="time-display">{{ getDuration() }}</div>
     </div>
   </div>
   <div id="right">
