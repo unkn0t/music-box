@@ -8,13 +8,12 @@ import {Track} from './track';
   providedIn: 'root'
 })
 export class PlaylistService {
-  private apiUrl = 'http://localhost:8000/api';
-  private plistUrl = `${this.apiUrl}/playlists`;
+  private apiUrl = 'http://localhost:8000/api/playlists';
 
   private http = inject(HttpClient);
 
   getById(id: string): Observable<Playlist> {
-    return this.http.get<Playlist>(`${this.plistUrl}/${id}/`);
+    return this.http.get<Playlist>(`${this.apiUrl}/${id}/`);
   }
 
   update(id: string, name: string, cover: File | undefined): Observable<Playlist> {
@@ -23,25 +22,14 @@ export class PlaylistService {
     if (cover) {
       formData.append('cover', cover);
     }
-    return this.http.put<Playlist>(`${this.plistUrl}/${id}/`, formData);
+    return this.http.put<Playlist>(`${this.apiUrl}/${id}/`, formData);
   }
 
   delete(id: string): Observable<any> {
-    return this.http.delete(`${this.plistUrl}/${id}/`);
-  }
-
-  create(playlist: Playlist): Observable<Playlist> {
-    return this.http.post<Playlist>(`${this.apiUrl}/me/playlists/`, {
-      name: playlist.name,
-      tracks: playlist.tracks,
-    });
-  }
-
-  listCurrent(): Observable<Playlist[]> {
-    return this.http.get<Playlist[]>(`${this.apiUrl}/me/playlists/`);
+    return this.http.delete(`${this.apiUrl}/${id}/`);
   }
 
   listTracksOf(id: string): Observable<Track[]> {
-    return this.http.get<Track[]>(`${this.plistUrl}/${id}/tracks/`);
+    return this.http.get<Track[]>(`${this.apiUrl}/${id}/tracks/`);
   }
 }

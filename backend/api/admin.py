@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import Artist, Album, Track, Playlist, PlaylistTracks
+
+from api.models.album import Album
+from api.models.artist import Artist
+from api.models.playlist import Playlist, PlaylistTracks
+from api.models.track import Track
 
 admin.site.register(Artist)
 admin.site.register(Album)

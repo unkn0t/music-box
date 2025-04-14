@@ -18,27 +18,18 @@ import {UserService} from '../user.service';
 export class PlaylistTableComponent {
   playlists: Playlist[] = [];
 
-  private playlistService = inject(PlaylistService);
   private userService = inject(UserService);
   private router = inject(Router);
 
   constructor() {
-    this.playlistService.listCurrent().subscribe((data) => {
+    this.userService.playlists().subscribe((data) => {
       this.playlists = data;
     });
   }
 
   createPlaylist() {
     this.userService.current().subscribe(user => {
-      let playlist: Playlist = {
-        id: '',
-        name: `Playlist #${this.playlists.length}`,
-        cover: '',
-        tracks: [],
-        owner: user.username,
-      };
-
-      this.playlistService.create(playlist).subscribe(playlist => {
+      this.userService.createPlaylist(`Playlist #${this.playlists.length}`).subscribe(playlist => {
         this.router.navigate(['/playlists', playlist.id]);
       })
     });

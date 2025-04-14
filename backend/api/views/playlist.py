@@ -1,97 +1,16 @@
 from uuid import UUID
 
-from django.contrib.auth.models import User
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import permissions, status
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Album, Artist, Playlist, PlaylistTracks, Track
-from .permissions import IsOwner
-from .serializers import (
-    AlbumSerializer,
-    ArtistSerializer,
-    PlaylistSerializer,
-    TrackSerializer,
-    UserSerializer,
-)
-
-
-class UserDetails(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get(self, request):
-        try:
-            user = User.objects.get(pk=request.user.id)
-            serializer = UserSerializer(user)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        return Response(serializer.data)
-
-
-class UserListPlaylists(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, user_id):
-        try:
-            user = User.objects.get(pk=user_id)
-            serializer = PlaylistSerializer(user.playlists, many=True)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        return Response(serializer.data)
-
-
-@api_view(["GET"])
-def artist_list(request):
-    artists = Artist.objects.all()
-    serializer = ArtistSerializer(artists, many=True)
-    return Response(serializer.data)
-
-
-@api_view(["GET"])
-def artist_details(request, artist_id):
-    try:
-        artist = Artist.objects.get(pk=artist_id)
-        serializer = ArtistSerializer(artist)
-    except Artist.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    return Response(serializer.data)
-
-
-@api_view(["GET"])
-def artist_list_albums(request, artist_id):
-    albums = Album.objects.filter(artists__id=artist_id)
-    serializer = AlbumSerializer(albums, many=True)
-    return Response(serializer.data)
-
-
-@api_view(["GET"])
-def artist_list_tracks(request, artist_id):
-    tracks = Track.objects.filter(artists__id=artist_id)
-    serializer = TrackSerializer(tracks, many=True)
-    return Response(serializer.data)
-
-
-class AlbumDetails(APIView):
-    def get(self, request, album_id, format=None):
-        try:
-            album = Album.objects.get(pk=album_id)
-            serializer = AlbumSerializer(album)
-        except Album.DoesNotExist as e:
-            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-        return Response(serializer.data)
-
-
-@api_view(["GET"])
-def album_list_tracks(request, album_id):
-    try:
-        tracks = Album.objects.get(pk=album_id).tracks.order_by("track_number")
-        serializer = TrackSerializer(tracks, many=True)
-        return Response(serializer.data)
-    except Album.DoesNotExist as e:
-        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+from api.models.playlist import Playlist, PlaylistTracks
+from api.models.track import Track
+from api.permissions import IsOwner
+from api.serializers.playlist import PlaylistSerializer
+from api.serializers.track import TrackSerializer
 
 
 class PlaylistList(APIView):
