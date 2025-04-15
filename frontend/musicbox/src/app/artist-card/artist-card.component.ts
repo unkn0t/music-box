@@ -11,12 +11,7 @@ import {Router} from '@angular/router';
 export class ArtistCardComponent {
   @Input() artist!: Artist;
 
-  private backendUrl = 'http://localhost:8000';
   private router = inject(Router);
-
-  getPhoto(): string {
-    return `${this.backendUrl}${this.artist.photo}`;
-  }
 
   goToAlbums() {
     this.router.navigate(['/artists', this.artist.id]).then((res) =>

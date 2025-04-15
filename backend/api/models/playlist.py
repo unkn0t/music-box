@@ -25,10 +25,12 @@ class Playlist(models.Model):
 
 
 class PlaylistTracks(models.Model):
-    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
+    playlist = models.ForeignKey(
+        Playlist, related_name="playlist_tracks", on_delete=models.CASCADE
+    )
     track = models.ForeignKey(Track, on_delete=models.CASCADE)
     track_number = models.PositiveIntegerField()
-    date_added = models.DateField(auto_now_add=True)
+    added_at = models.DateField(auto_now_add=True)
 
     class Meta:
         constraints = [

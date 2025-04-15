@@ -8,3 +8,8 @@ export interface Track {
   artists: Artist[],
   audio: string,
 }
+
+export interface PlaylistTrack {
+  track: Track,
+  added_at: string,
+}

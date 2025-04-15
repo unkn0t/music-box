@@ -8,7 +8,7 @@ import {Playlist} from './playlist';
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:8000/api/users';
+  private apiUrl = 'http://localhost:8000/api';
 
   private http = inject(HttpClient);
 

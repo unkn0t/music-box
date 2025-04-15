@@ -9,7 +9,7 @@ import {AuthService} from './auth.service';
 import {inject} from '@angular/core';
 import {BehaviorSubject, catchError, filter, Observable, switchMap, take, throwError} from 'rxjs';
 
-const API_URLS = ['/api/auth/logout', '/api/users/me', '/api/playlists']
+const API_URLS = ['/api/auth/logout', '/api/me', '/api/playlists', '/api/users']
 
 let isRefreshing = false;
 let tokenSubject = new BehaviorSubject<string | null>(null);

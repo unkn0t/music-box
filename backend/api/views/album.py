@@ -1,28 +1,26 @@
-from rest_framework import status
-from rest_framework.decorators import api_view
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.request import Request
+from rest_framework import viewsets
 
 from api.models.album import Album
 from api.serializers.album import AlbumSerializer
 from api.serializers.track import TrackSerializer
 
 
-class AlbumDetails(APIView):
-    def get(self, request, album_id, format=None):
-        try:
-            album = Album.objects.get(pk=album_id)
-            serializer = AlbumSerializer(album)
-        except Album.DoesNotExist as e:
-            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+class AlbumViewSet(viewsets.ViewSet):
+
+    def retrieve(self, request: Request, pk=None) -> Response:
+        queryset = Album.objects.all()
+        album = get_object_or_404(queryset, pk=pk)
+        serializer = AlbumSerializer(album)
         return Response(serializer.data)
 
-
-@api_view(["GET"])
-def album_list_tracks(request, album_id):
-    try:
-        tracks = Album.objects.get(pk=album_id).tracks.order_by("track_number")
+    @action(detail=True)
+    def tracks(self, request: Request, pk=None) -> Response:
+        queryset = Album.objects.all()
+        album = get_object_or_404(queryset, pk=pk)
+        tracks = album.tracks.order_by("track_number")
         serializer = TrackSerializer(tracks, many=True)
         return Response(serializer.data)
-    except Album.DoesNotExist as e:
-        return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)

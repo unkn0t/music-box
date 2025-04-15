@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Playlist} from './playlist';
-import {Track} from './track';
+import {PlaylistTrack} from './track';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +29,7 @@ export class PlaylistService {
     return this.http.delete(`${this.apiUrl}/${id}/`);
   }
 
-  listTracksOf(id: string): Observable<Track[]> {
-    return this.http.get<Track[]>(`${this.apiUrl}/${id}/tracks/`);
+  listTracksOf(id: string): Observable<PlaylistTrack[]> {
+    return this.http.get<PlaylistTrack[]>(`${this.apiUrl}/${id}/tracks/`);
   }
 }

@@ -16,7 +16,7 @@ class Track(models.Model):
     )
     track_number = models.PositiveIntegerField()
     duration_ms = models.PositiveIntegerField(editable=False, blank=True)
-    artists = models.ManyToManyField(Artist)
+    artists = models.ManyToManyField(Artist, related_name="tracks")
     audio = models.FileField(upload_to=UploadToPath("audio"))
 
     def __str__(self):

@@ -24,7 +24,7 @@ class Album(models.Model):
     release_date_precision = models.CharField(
         max_length=5, choices=DatePrecision
     )
-    artists = models.ManyToManyField(Artist)
+    artists = models.ManyToManyField(Artist, related_name="albums")
 
     def __str__(self):
         return f"{self.name}({self.id})"

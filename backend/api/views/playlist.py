@@ -1,153 +1,76 @@
-from uuid import UUID
+from http import HTTPMethod
 
 from django.db import transaction
 from django.utils import timezone
-from rest_framework import permissions, status
+from rest_framework import mixins, permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from api.models.playlist import Playlist, PlaylistTracks
-from api.models.track import Track
 from api.permissions import IsOwner
-from api.serializers.playlist import PlaylistSerializer
-from api.serializers.track import TrackSerializer
+from api.serializers.playlist import (
+    PlaylistInsertTracksSerializer,
+    PlaylistSerializer,
+)
+from api.serializers.playlist import PlaylistTrackSerializer
 
 
-class PlaylistList(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+class PlaylistViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Playlist.objects.all()
+    serializer_class = PlaylistSerializer
+    permission_classes = (permissions.IsAuthenticated, IsOwner)
 
-    def get(self, request, format=None):
-        playlists = Playlist.objects.filter(owner=request.user)
-        serializer = PlaylistSerializer(playlists, many=True)
-        return Response(serializer.data)
+    @action(detail=True, methods=[HTTPMethod.GET, HTTPMethod.POST])
+    def tracks(self, request: Request, pk=None) -> Response:
+        playlist = self.get_object()
 
-    def post(self, request, format=None):
-        serializer = PlaylistSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(owner=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST
-            )
+        if request.method == "GET":
+            tracks = playlist.playlist_tracks.order_by("track_number")
+            serializer = PlaylistTrackSerializer(tracks, many=True)
+            return Response(serializer.data)
 
+        elif request.method == "POST":
+            serializer = PlaylistInsertTracksSerializer(data=request.data)
 
-class PlaylistDetails(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsOwner]
-
-    def get(self, request, playlist_id, format=None):
-        try:
-            playlist = Playlist.objects.get(pk=playlist_id)
-            serializer = PlaylistSerializer(playlist)
-        except Playlist.DoesNotExist as e:
-            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-
-        return Response(serializer.data)
-
-    def put(self, request, playlist_id, format=None):
-        try:
-            playlist = Playlist.objects.get(pk=playlist_id)
-            serializer = PlaylistSerializer(playlist, data=request.data)
-
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            else:
+            if not serializer.is_valid():
                 return Response(
                     serializer.errors, status=status.HTTP_400_BAD_REQUEST
                 )
-        except Playlist.DoesNotExist as e:
-            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
 
-    def delete(self, request, playlist_id, format=None):
-        try:
-            playlist = Playlist.objects.get(pk=playlist_id)
-            playlist.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except Playlist.DoesNotExist as e:
-            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-
-
-class PlaylistListTracks(APIView):
-    permission_classes = (permissions.IsAuthenticated, IsOwner)
-
-    def get(self, request, playlist_id, format=None):
-        try:
-            tracks = Playlist.objects.get(pk=playlist_id).tracks.order_by(
-                "track_number"
-            )
-            serializer = TrackSerializer(tracks, many=True)
-            return Response(serializer.data)
-        except Playlist.DoesNotExist as e:
-            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-
-    def post(self, request, playlist_id, format=None):
-        data = request.data
-        position = data.get("position")
-        track_ids = data.get("track_ids", [])
-
-        # Validate playlist existence
-        try:
-            playlist = Playlist.objects.get(id=playlist_id)
-        except (Playlist.DoesNotExist, ValueError):
-            return Response(
-                {"error": "Invalid playlist ID"},
-                status == status.HTTP_400_BAD_REQUEST,
-            )
-
-        # Validate that 'position' is an integer and at least 0
-        if not isinstance(position, int) or position < 0:
-            return Response(
-                {"error": "Invalid position value"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        # Validate track_ids format and existence
-        try:
-            track_ids = [UUID(tid) for tid in track_ids]
-        except ValueError:
-            return Response(
-                {"error": "One or more invalid track UUIDs"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        tracks = Track.objects.filter(id__in=track_ids)
-        if tracks.count() != len(track_ids):
-            existing_ids = {str(track.id) for track in tracks}
-            missing_ids = [
-                str(tid) for tid in track_ids if str(tid) not in existing_ids
-            ]
-            return Response(
-                {"error": f"Tracks not found: {missing_ids}"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        with transaction.atomic():
-            shift_count = len(track_ids)
-            existing_playlist_tracks = PlaylistTracks.objects.filter(
-                playlist=playlist, track_number__gt=position
-            )
-
-            for item in existing_playlist_tracks.order_by("-track_number"):
-                item.track_number += shift_count
-                item.save()
-
-            new_playlist_tracks = []
-            for i, tid in enumerate(track_ids):
-                new_track_number = position + i
-                new_playlist_tracks.append(
-                    PlaylistTracks(
-                        playlist=playlist,
-                        track_id=tid,
-                        track_number=new_track_number,
-                    )
+            position = serializer.data.get("position")
+            tracks = serializer.data.get("tracks")
+            with transaction.atomic():
+                shift = len(tracks)
+                tracks_after_position = PlaylistTracks.objects.filter(
+                    playlist=playlist, track_number__gt=position
                 )
-            PlaylistTracks.objects.bulk_create(new_playlist_tracks)
 
-            playlist.updated_at = timezone.now()
-            playlist.save()
+                for item in tracks_after_position.order_by("-track_number"):
+                    item.track_number += shift
+                    item.save()
 
-        return Response(
-            {"message": "Tracks inserted successfully"},
-            status=status.HTTP_201_CREATED,
-        )
+                new_playlist_tracks = []
+                for i, tid in enumerate(tracks):
+                    new_track_number = position + i + 1
+                    new_playlist_tracks.append(
+                        PlaylistTracks(
+                            playlist=playlist,
+                            track_id=tid,
+                            track_number=new_track_number,
+                        )
+                    )
+                PlaylistTracks.objects.bulk_create(new_playlist_tracks)
+
+                playlist.updated_at = timezone.now()
+                playlist.save()
+
+            return Response(
+                {"message": "Tracks inserted successfully"},
+                status=status.HTTP_201_CREATED,
+            )

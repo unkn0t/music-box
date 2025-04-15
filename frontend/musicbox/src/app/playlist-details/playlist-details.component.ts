@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {Track} from '../track';
+import {PlaylistTrack, Track} from '../track';
 import {PlaylistService} from '../playlist.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Playlist} from '../playlist';
@@ -19,9 +19,8 @@ import {TimeFormatter} from '../time-formatter';
 export class PlaylistDetailsComponent implements OnInit {
   playlist: Playlist | undefined;
 
-  tracks: Track[] = [];
+  tracks: PlaylistTrack[] = [];
 
-  private backendUrl = 'http://localhost:8000';
   private playlistService = inject(PlaylistService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -39,18 +38,18 @@ export class PlaylistDetailsComponent implements OnInit {
     });
   }
 
-  addToQueue() {
-    this.playerService.playTracks(this.tracks);
+  getTracks(): Track[] {
+    return this.tracks.map(ptrack => ptrack.track);
   }
 
-  getCover(): string {
-    return `${this.backendUrl}${this.playlist?.cover}`;
+  addToQueue() {
+    this.playerService.playTracks(this.getTracks());
   }
 
   getAboutDuration(): string {
     let total_duration = 0;
     for (const track of this.tracks) {
-      total_duration += track.duration_ms;
+      total_duration += track.track.duration_ms;
     }
     return TimeFormatter.formatAbout(total_duration);
   }
