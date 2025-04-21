@@ -1,8 +1,9 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
+import {Observable, switchMap, take} from 'rxjs';
 import {Playlist} from './playlist';
-import {PlaylistTrack} from './track';
+import {PlaylistTrack, Track} from './track';
+import {tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -31,5 +32,16 @@ export class PlaylistService {
 
   listTracksOf(id: string): Observable<PlaylistTrack[]> {
     return this.http.get<PlaylistTrack[]>(`${this.apiUrl}/${id}/tracks/`);
+  }
+
+  insertTracks(id: string, tracks: Track[], pos: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/${id}/tracks/`, { position: pos, tracks: tracks.map(track => track.id) });
+  }
+
+  appendTracks(id: string, tracks: Track[]): Observable<any> {
+    return this.listTracksOf(id).pipe(
+      take(1),
+      switchMap(existingTracks => this.insertTracks(id, tracks, existingTracks.length))
+    );
   }
 }

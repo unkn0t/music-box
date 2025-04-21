@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>Select a playlist</h2>
+
+<mat-dialog-content>
+  <mat-list *ngIf="playlists.length; else noPl">
+    <mat-list-item *ngFor="let pl of playlists">
+      {{ pl.name }}
+      <span class="spacer"></span>
+      <button mat-button (click)="addTo(pl)">Add</button>
+    </mat-list-item>
+  </mat-list>
+  <ng-template #noPl>
+    <p>You have no playlists yet.</p>
+  </ng-template>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancel</button>
+</mat-dialog-actions>
