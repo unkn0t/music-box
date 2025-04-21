@@ -25,9 +25,15 @@ class PlaylistSerializer(serializers.ModelSerializer):
 
 
 class PlaylistInsertTracksSerializer(serializers.Serializer):
-    position = (
-        serializers.IntegerField()
-    )  # TODO: Check that position is positive and less than current track count
+    position = serializers.IntegerField(min_value=0)
     tracks = serializers.PrimaryKeyRelatedField(
         queryset=Track.objects.all(), many=True, allow_empty=False
+    )
+
+
+class PlaylistRemoveTracksSerializer(serializers.Serializer):
+    positions = serializers.ListField(
+        child=serializers.IntegerField(min_value=1),
+        allow_empty=False,
+        help_text="1-based positions of tracks to removed",
     )

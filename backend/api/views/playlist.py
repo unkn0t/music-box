@@ -1,6 +1,7 @@
 from http import HTTPMethod
 
 from django.db import transaction
+from django.db.models import F
 from django.utils import timezone
 from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
@@ -11,9 +12,10 @@ from api.models.playlist import Playlist, PlaylistTracks
 from api.permissions import IsOwner
 from api.serializers.playlist import (
     PlaylistInsertTracksSerializer,
+    PlaylistRemoveTracksSerializer,
     PlaylistSerializer,
+    PlaylistTrackSerializer,
 )
-from api.serializers.playlist import PlaylistTrackSerializer
 
 
 class PlaylistViewSet(
@@ -26,7 +28,10 @@ class PlaylistViewSet(
     serializer_class = PlaylistSerializer
     permission_classes = (permissions.IsAuthenticated, IsOwner)
 
-    @action(detail=True, methods=[HTTPMethod.GET, HTTPMethod.POST])
+    @action(
+        detail=True,
+        methods=[HTTPMethod.GET, HTTPMethod.POST, HTTPMethod.DELETE],
+    )
     def tracks(self, request: Request, pk=None) -> Response:
         playlist = self.get_object()
 
@@ -35,16 +40,30 @@ class PlaylistViewSet(
             serializer = PlaylistTrackSerializer(tracks, many=True)
             return Response(serializer.data)
 
+        elif request.method == "DELETE":
+            serializer = PlaylistRemoveTracksSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+            positions = sorted(serializer.validated_data["positions"])
+            with transaction.atomic():
+                for pos in positions:
+                    PlaylistTracks.objects.filter(
+                        playlist=playlist, track_number=pos
+                    ).delete()
+
+                    PlaylistTracks.objects.filter(
+                        playlist=playlist,
+                        track_number__gt=pos,
+                    ).update(track_number=F("track_number") - 1)
+
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
         elif request.method == "POST":
             serializer = PlaylistInsertTracksSerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
 
-            if not serializer.is_valid():
-                return Response(
-                    serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                )
-
-            position = serializer.data.get("position")
-            tracks = serializer.data.get("tracks")
+            position = serializer.validated_data["position"]
+            tracks = serializer.validated_data["tracks"]
             with transaction.atomic():
                 shift = len(tracks)
                 tracks_after_position = PlaylistTracks.objects.filter(
