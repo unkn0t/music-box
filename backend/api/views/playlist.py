@@ -75,12 +75,12 @@ class PlaylistViewSet(
                     item.save()
 
                 new_playlist_tracks = []
-                for i, tid in enumerate(tracks):
+                for i, track in enumerate(tracks):
                     new_track_number = position + i + 1
                     new_playlist_tracks.append(
                         PlaylistTracks(
                             playlist=playlist,
-                            track_id=tid,
+                            track_id=track.id,
                             track_number=new_track_number,
                         )
                     )
